@@ -3,23 +3,9 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Ramdon ID
-resource "random_id" "unique_id" {
-  byte_length = 4
-}
-
-# Get Account ID
-data "aws_caller_identity" "current" {}
-
 # Locals
 locals {
-  account_id  = data.aws_caller_identity.current.account_id
-  unique_id   = random_id.unique_id.hex
   environment = var.environment
-
-  bucket_name_prefix    = "tf-state-${local.environment}-${local.unique_id}"
-  dynamodb_table_prefix = "tf-lock-${local.environment}-${local.unique_id}"
-
   tags = {
     Environment = local.environment
     ManagedBy   = "Terraform"
@@ -28,7 +14,7 @@ locals {
 
 # S3 Bucket
 resource "aws_s3_bucket" "main" {
-  bucket = local.bucket_name_prefix
+  bucket = var.bucket_name
   tags   = local.tags
 
   lifecycle {
@@ -74,7 +60,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 
 # Dynamodb Table
 resource "aws_dynamodb_table" "main" {
-  name         = local.dynamodb_table_prefix
+  name         = var.dynamodb_name
   hash_key     = "LockID"
   billing_mode = "PAY_PER_REQUEST"
 
