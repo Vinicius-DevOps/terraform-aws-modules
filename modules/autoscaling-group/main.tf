@@ -1,6 +1,6 @@
 # Launch Template
 resource "aws_launch_template" "main" {
-  name_prefix   = "${var.name}-lt-"
+  name_prefix   = "${var.environment}-lt-"
   image_id      = var.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
@@ -22,7 +22,7 @@ resource "aws_launch_template" "main" {
     resource_type = "instance"
     tags = merge(
       {
-        Name = "${var.name}-instance"
+        Name = "${var.environment}-instance"
       },
       var.tags
     )
@@ -32,7 +32,7 @@ resource "aws_launch_template" "main" {
     resource_type = "volume"
     tags = merge(
       {
-        Name = "${var.name}-volume"
+        Name = "${var.environment}-volume"
       },
       var.tags
     )
@@ -40,7 +40,7 @@ resource "aws_launch_template" "main" {
 
   tags = merge(
     {
-      Name = "${var.name}-launch-template"
+      Name = "${var.environment}-launch-template"
     },
     var.tags
   )
@@ -48,7 +48,7 @@ resource "aws_launch_template" "main" {
 
 # Auto Scaling Group
 resource "aws_autoscaling_group" "main" {
-  name                      = "${var.name}-asg"
+  name                      = "${var.environment}-asg"
   vpc_zone_identifier       = var.subnet_ids
   min_size                  = var.min_size
   max_size                  = var.max_size
@@ -65,7 +65,7 @@ resource "aws_autoscaling_group" "main" {
 
   tag {
     key                 = "Name"
-    value               = "${var.name}-asg-instance"
+    value               = "${var.environment}-asg-instance"
     propagate_at_launch = true
   }
 

@@ -1,5 +1,5 @@
-variable "name" {
-  description = "Base name for the Launch Template and Auto Scaling Group."
+variable "environment" {
+  description = "Name of the environment."
   type        = string
 }
 variable "ami_id" {
