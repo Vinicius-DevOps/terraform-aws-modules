@@ -1,15 +1,16 @@
 # Application Load Balancer (ALB)
 resource "aws_lb" "main" {
-  name               = var.name
-  internal           = var.internal
-  load_balancer_type = "application"
-  security_groups    = var.security_group_ids
-  subnets            = var.subnet_ids
+  name                       = var.name != null ? "${var.name}-${var.environment}" : "alb-${var.environment}"
+  internal                   = var.internal
+  load_balancer_type         = "application"
+  security_groups            = var.security_group_ids
+  subnets                    = var.subnet_ids
   enable_deletion_protection = false # True for enabling deletion protection
 
   tags = merge(
     {
-      Name = var.name
+      Name        = var.name
+      Environment = var.environment
     },
     var.tags
   )
@@ -17,7 +18,7 @@ resource "aws_lb" "main" {
 
 # Target Group
 resource "aws_lb_target_group" "main" {
-  name        = var.target_group_name != null ? var.target_group_name : "${var.name}-tg"
+  name        = var.target_group_name != null ? "${var.target_group_name}-${var.environment}" : "tg-${var.environment}"
   port        = var.target_group_port
   protocol    = var.target_group_protocol
   vpc_id      = var.vpc_id
@@ -36,7 +37,8 @@ resource "aws_lb_target_group" "main" {
 
   tags = merge(
     {
-      Name = "${var.name}-tg"
+      Name        = "${var.name}-tg"
+      Environment = var.environment
     },
     var.tags
   )
@@ -55,7 +57,8 @@ resource "aws_lb_listener" "http" {
 
   tags = merge(
     {
-      Name = "${var.name}-listener"
+      Name        = "${var.name}-listener"
+      Environment = var.environment
     },
     var.tags
   )

@@ -1,8 +1,12 @@
 # Variáveis para o módulo ALB
-
+variable "environment" {
+  description = "Name of the environment."
+  type        = string
+}
 variable "name" {
   description = "Aplication Load Balancer name."
   type        = string
+  default     = "alb"
 }
 
 variable "vpc_id" {
