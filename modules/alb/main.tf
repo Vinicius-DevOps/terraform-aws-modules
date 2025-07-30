@@ -1,24 +1,20 @@
 # Application Load Balancer (ALB)
 resource "aws_lb" "main" {
-  name                       = var.name != null ? "${var.name}-${var.environment}" : "alb-${var.environment}"
-  internal                   = var.internal
+  internal                   = false
   load_balancer_type         = "application"
-  security_groups            = var.security_group_ids
-  subnets                    = var.subnet_ids
+  security_groups            = [var.security_group_id]
+  subnets                    = var.subnet_public_id[*]
   enable_deletion_protection = false # True for enabling deletion protection
 
-  tags = merge(
-    {
-      Name        = var.name
-      Environment = var.environment
-    },
-    var.tags
-  )
+  tags = {
+    Name        = "alb-${var.environment}"
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
 }
 
 # Target Group
 resource "aws_lb_target_group" "main" {
-  name        = var.target_group_name != null ? "${var.target_group_name}-${var.environment}" : "tg-${var.environment}"
   port        = var.target_group_port
   protocol    = var.target_group_protocol
   vpc_id      = var.vpc_id
@@ -35,13 +31,11 @@ resource "aws_lb_target_group" "main" {
     matcher             = "200" # Status code 200
   }
 
-  tags = merge(
-    {
-      Name        = "${var.name}-tg"
-      Environment = var.environment
-    },
-    var.tags
-  )
+  tags = {
+    Name        = "tg-${var.environment}"
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
 }
 
 # Listener HTTP
@@ -55,11 +49,9 @@ resource "aws_lb_listener" "http" {
     target_group_arn = aws_lb_target_group.main.arn
   }
 
-  tags = merge(
-    {
-      Name        = "${var.name}-listener"
-      Environment = var.environment
-    },
-    var.tags
-  )
+  tags = {
+    Name        = "listener-HTTP-${var.environment}"
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
 }

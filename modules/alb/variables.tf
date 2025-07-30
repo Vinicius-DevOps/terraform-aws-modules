@@ -1,80 +1,46 @@
-# Variáveis para o módulo ALB
+# ALB
 variable "environment" {
-  description = "Name of the environment."
+  description = "Environment name."
   type        = string
 }
-variable "name" {
-  description = "Aplication Load Balancer name."
+variable "security_group_id" {
+  description = "Security Group ID for the ALB."
   type        = string
-  default     = "alb"
+}
+variable "subnet_public_id" {
+  description = "Subnet ID for the ALB."
+  type        = list(string)
 }
 
+# Target Group
+variable "target_group_port" {
+  description = "Port for the target group."
+  type        = number
+}
+variable "target_group_protocol" {
+  description = "Protocol for the target group."
+  type        = string
+}
 variable "vpc_id" {
   description = "VPC ID."
   type        = string
 }
-
-variable "subnet_ids" {
-  description = "List of Public Subnet IDs where the ALB will be deployed."
-  type        = list(string)
-}
-
-variable "security_group_ids" {
-  description = "List of Security Group IDs associated with the ALB."
-  type        = list(string)
-  default     = []
-}
-
-variable "internal" {
-  description = "Defines whether the ALB is internal or not."
-  type        = bool
-  default     = false
-}
-
-variable "target_group_name" {
-  description = "Target Group name. If not provided, the default will be the ALB name followed by '-tg'."
-  type        = string
-  default     = null
-}
-
-variable "target_group_port" {
-  description = "Target Group port used to route traffic."
-  type        = number
-  default     = 80
-}
-
-variable "target_group_protocol" {
-  description = "The protocol used by the Target Group (HTTP, HTTPS, TCP, TLS, UDP, TCP_UDP, GENEVE)."
-  type        = string
-  default     = "HTTP"
-}
-
+# Health Check
 variable "health_check_path" {
-  description = "Health Check path."
+  description = "Path for the health check."
   type        = string
-  default     = "/"
 }
-
 variable "health_check_port" {
-  description = "Health Check port."
+  description = "Port for the health check."
   type        = string
-  default     = "traffic-port"
 }
 
+# Listener
 variable "listener_port" {
-  description = "The port on which the ALB will listen."
+  description = "Port for the listener."
   type        = number
-  default     = 80
 }
-
 variable "listener_protocol" {
-  description = "The protocol used by the Listener (HTTP, HTTPS, TCP, TLS, UDP, TCP_UDP, GENEVE)."
+  description = "Protocol for the listener."
   type        = string
-  default     = "HTTP"
-}
-
-variable "tags" {
-  description = "Tags to be applied to the ALB."
-  type        = map(string)
-  default     = {}
 }
